@@ -1,6 +1,6 @@
 package com.softwaremind.recruitment.gkisiel;
 
-import com.softwaremind.recruitment.gkisiel.models.Item;
+import com.softwaremind.recruitment.gkisiel.models.ItemEntity;
 import com.softwaremind.recruitment.gkisiel.repositories.ItemRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,8 +24,8 @@ public class GkisielApplication {
 	CommandLineRunner init(ItemRepository itemRepository) {
 		return args ->
 			Stream.of("Learn", "Run", "Sing", "Jump").forEach(task -> {
-				Item item = new Item(task, "This is a description of " + task, RANDOM.nextBoolean());
-				itemRepository.save(item);
+				ItemEntity itemEntity = new ItemEntity(task, "This is a description of " + task, RANDOM.nextBoolean());
+				itemRepository.save(itemEntity);
 			});
 	}
 

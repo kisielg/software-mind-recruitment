@@ -1,0 +1,42 @@
+version: "1.0"
+
+services:
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/tmp/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=db_user
+      - POSTGRES_DB=database
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./src/main/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./src/main/resources/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+  gkisiel-app:
+    image: docker.io/library/gkisiel:0.0.2
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+      - grafana
+      - prometheus
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
